@@ -1,8 +1,9 @@
 {
   "name": "task-organizer",
-  "private": true,
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
+  "description": "A simple desktop task planner built with Electron and React.",
+  "author": "Truls Aarøe Løvik",
   "main": "dist-electron/main.cjs",
   "scripts": {
     "build:preload": "esbuild electron/preload.ts --bundle --platform=node --format=cjs --external:electron --external:fs --outfile=dist-electron/preload.js",
@@ -16,52 +17,21 @@
   },
   "build": {
     "appId": "com.yourapp.taskorganizer",
-    "productName": "Simple To-do",
+    "productName": "Task Planner",
     "files": [
       "dist",
       "dist-electron"
     ],
     "win": {
       "icon": "public/icon.ico",
-      "publisherName": "Truls Aarøe Løvik",
       "target": "nsis"
     },
-    "mac": {
-      "icon": "public/icon.icns",
-      "publisherName": "Truls Aarøe Løvik",
-      "target": "nsis"
-    },
-    "linux": {
-      "icon": "public/icon.png",
-      "publisherName": "Truls Aarøe Løvik",
-      "target": "nsis"
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
-  },
-  "dependencies": {
-    "@tailwindcss/postcss": "^4.1.10",
-    "electron-store": "^10.1.0",
-    "lucide-react": "^0.522.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "tailwindcss": "^4.1.10",
-    "xlsx": "^0.18.5"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.25.0",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^4.4.1",
-    "concurrently": "^9.2.0",
-    "electron": "^36.5.0",
-    "electron-builder": "^26.0.12",
-    "esbuild": "^0.25.5",
-    "eslint": "^9.25.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "globals": "^16.0.0",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.5",
-    "wait-on": "^8.0.3"
   }
 }

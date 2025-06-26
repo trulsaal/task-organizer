@@ -48123,7 +48123,7 @@ var require_xlsx = __commonJS({
 
 // electron/main.ts
 var import_electron2 = require("electron");
-var import_path = __toESM(require("path"), 1);
+var import_path = __toESM(require("path"));
 
 // node_modules/electron-store/index.js
 var import_node_process7 = __toESM(require("node:process"), 1);
@@ -49481,8 +49481,8 @@ var ElectronStore = class extends Conf {
 };
 
 // electron/main.ts
-var XLSX = __toESM(require_xlsx(), 1);
-var url = __toESM(require("url"), 1);
+var XLSX = __toESM(require_xlsx());
+var url = __toESM(require("url"));
 var win = null;
 var store = new ElectronStore();
 console.log("\u{1F5C2} Store path:", store.path);
