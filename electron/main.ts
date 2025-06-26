@@ -21,15 +21,18 @@ const createWindow = () => {
     x: width - 550,
     y: 0,
     icon: path.join(__dirname, "../public/icon.ico"), // Windows icon
-    frame: false,
+
+    frame: true,
     resizable: false,
-    movable: false,
+    movable: true,
     alwaysOnTop: false,
     webPreferences: {
       contextIsolation: true,
       preload: preloadPath,
     },
   });
+
+  win.setMenuBarVisibility(false);
 
   if (isDev) {
     win.loadURL("http://localhost:5173");
@@ -67,7 +70,7 @@ const createWindow = () => {
 
   // IPC: Export tasks to Excel
   ipcMain.handle("export-to-excel", async () => {
-    const sections = ["Today", "Tomorrow", "Postponed/Backlog"];
+    const sections = ["Today", "Tomorrow", "This Week", "Postponed/Backlog"];
     const workbook = XLSX.utils.book_new();
 
     const sanitizeSheetName = (name: string) =>
@@ -78,11 +81,31 @@ const createWindow = () => {
         text: string;
         finished: boolean;
       }[];
-      const sheetData = data.map((task) => ({
-        Task: task.text,
-        Finished: task.finished ? "Yes" : "No",
-      }));
-      const worksheet = XLSX.utils.json_to_sheet(sheetData);
+
+      // ✅ Build 2D array (Array of Arrays) with header row
+      const sheetData = [
+        ["Task", "Finished"], // Header row
+        ...data.map((task) => [task.text, task.finished ? "Yes" : "No"]),
+      ];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+
+      // ✅ Set column widths
+      worksheet["!cols"] = [
+        { wch: 50 }, // Task column width (approx 50 characters wide)
+        { wch: 12 }, // Finished column width
+      ];
+
+      // ✅ Make header row bold
+      const range = XLSX.utils.decode_range(worksheet["!ref"]!);
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
+        const cell = worksheet[cellAddress];
+        if (cell) {
+          cell.s = { font: { bold: true } };
+        }
+      }
+
       XLSX.utils.book_append_sheet(
         workbook,
         worksheet,
@@ -97,7 +120,10 @@ const createWindow = () => {
     });
 
     if (filePath) {
-      XLSX.writeFile(workbook, filePath);
+      XLSX.writeFile(workbook, filePath, {
+        bookType: "xlsx",
+        cellStyles: true,
+      });
     }
   });
 };

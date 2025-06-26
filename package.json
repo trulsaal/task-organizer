@@ -1,7 +1,7 @@
 {
   "name": "task-organizer",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist-electron/main.cjs",
   "scripts": {
@@ -16,19 +16,25 @@
   },
   "build": {
     "appId": "com.yourapp.taskorganizer",
-    "productName": "Task Planner",
+    "productName": "Simple To-do",
     "files": [
       "dist",
       "dist-electron"
     ],
     "win": {
-      "icon": "public/icon.ico"
+      "icon": "public/icon.ico",
+      "publisherName": "Truls Aarøe Løvik",
+      "target": "nsis"
     },
     "mac": {
-      "icon": "public/icon.icns"
+      "icon": "public/icon.icns",
+      "publisherName": "Truls Aarøe Løvik",
+      "target": "nsis"
     },
     "linux": {
-      "icon": "public/icon.png"
+      "icon": "public/icon.png",
+      "publisherName": "Truls Aarøe Løvik",
+      "target": "nsis"
     }
   },
   "dependencies": {

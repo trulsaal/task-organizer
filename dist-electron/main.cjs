@@ -49498,15 +49498,16 @@ var createWindow = () => {
     y: 0,
     icon: import_path.default.join(__dirname, "../public/icon.ico"),
     // Windows icon
-    frame: false,
+    frame: true,
     resizable: false,
-    movable: false,
+    movable: true,
     alwaysOnTop: false,
     webPreferences: {
       contextIsolation: true,
       preload: preloadPath
     }
   });
+  win.setMenuBarVisibility(false);
   if (isDev) {
     win.loadURL("http://localhost:5173");
   } else {
@@ -49535,16 +49536,31 @@ var createWindow = () => {
     }
   });
   import_electron2.ipcMain.handle("export-to-excel", async () => {
-    const sections = ["Today", "Tomorrow", "Postponed/Backlog"];
+    const sections = ["Today", "Tomorrow", "This Week", "Postponed/Backlog"];
     const workbook = XLSX.utils.book_new();
     const sanitizeSheetName = (name) => name.replace(/[:\\/?*[\]]/g, "_").substring(0, 31);
     sections.forEach((section) => {
       const data = store.get(section, []);
-      const sheetData = data.map((task) => ({
-        Task: task.text,
-        Finished: task.finished ? "Yes" : "No"
-      }));
-      const worksheet = XLSX.utils.json_to_sheet(sheetData);
+      const sheetData = [
+        ["Task", "Finished"],
+        // Header row
+        ...data.map((task) => [task.text, task.finished ? "Yes" : "No"])
+      ];
+      const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+      worksheet["!cols"] = [
+        { wch: 50 },
+        // Task column width (approx 50 characters wide)
+        { wch: 12 }
+        // Finished column width
+      ];
+      const range = XLSX.utils.decode_range(worksheet["!ref"]);
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
+        const cell = worksheet[cellAddress];
+        if (cell) {
+          cell.s = { font: { bold: true } };
+        }
+      }
       XLSX.utils.book_append_sheet(
         workbook,
         worksheet,
@@ -49557,7 +49573,10 @@ var createWindow = () => {
       filters: [{ name: "Excel Files", extensions: ["xlsx"] }]
     });
     if (filePath) {
-      XLSX.writeFile(workbook, filePath);
+      XLSX.writeFile(workbook, filePath, {
+        bookType: "xlsx",
+        cellStyles: true
+      });
     }
   });
 };

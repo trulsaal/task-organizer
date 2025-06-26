@@ -8,6 +8,7 @@ type Task = {
 };
 
 type TaskSectionProps = {
+  icon: React.ReactNode;
   title: string;
 };
 
@@ -21,7 +22,7 @@ declare global {
   }
 }
 
-export default function TaskSection({ title }: TaskSectionProps) {
+export default function TaskSection({ title, icon }: TaskSectionProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -104,7 +105,10 @@ export default function TaskSection({ title }: TaskSectionProps) {
 
   return (
     <div className="shadow-md p-4 border border-gray-300 bg-white my-4 rounded-lg h-full">
-      <h2 className="text-lg font-semibold mb-2">{title}</h2>
+      <h2 className="text-lg flex items-center font-semibold mb-2 gap-2">
+        {icon}
+        {title}
+      </h2>
 
       {/* Active Tasks */}
       {tasks

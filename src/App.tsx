@@ -1,3 +1,4 @@
+import { ArrowRight, CalendarDays, ListRestart } from "lucide-react";
 import TaskSection from "./components/TaskSection";
 import TopNav from "./components/TopNav";
 import Home from "./pages/Home";
@@ -8,9 +9,9 @@ export default function App() {
       <Home />
       <TopNav />
       <div className="flex flex-col h-full  overflow-auto">
-        <TaskSection title="Today" />
-        <TaskSection title="Tomorrow" />
-        <TaskSection title="Postponed/Backlog" />
+        <TaskSection icon={<CalendarDays />} title="Today" />
+        <TaskSection icon={<ArrowRight />} title="Tomorrow" />
+        <TaskSection icon={<ListRestart />} title="Postponed/Backlog" />
       </div>
     </div>
   );
